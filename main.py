@@ -17,19 +17,20 @@ def print_column_letters():
     '''Prints the column identificatory letters (A,B..) 
     in the upper side of the board
     '''
-    for letter in ascii_uppercase[:BOARDSIZE]:
+    RANGE='1234567890'                  # Test in order to make finding
+    for letter in RANGE[:BOARDSIZE]:    # the center of the board easier
         print(letter,end=' ')
     print()
 
 def print_board(board):
     '''Prints the board, given by parameter (a list)
     '''
-    print(' '*4,end='')
+    print(' '*4,end='')                         # Spaces printed for column letter fitting
     print_column_letters()
     rowcount=1
     for row in board:
-        if rowcount<10:
-            print(' '+str(rowcount),end=' ')
+        if rowcount<10:                         # Validates if row number is 10 
+            print(' '+str(rowcount),end=' ')    # or more for space fitting
         else:
             print(rowcount,end=' ')
         for column in row:
