@@ -1,16 +1,15 @@
 from string import ascii_uppercase
 
-BOARDSIZE=8
+BOARDSIZE=10
 
 def initialize_board():
     ''' Initializes the board, as an empty board.
     Returns the board (list)
     '''
+    emptylist=['']
     board=[]
     for i in range(BOARDSIZE):
-        board.append([])
-        for x in range(BOARDSIZE):
-            board[i].append('')
+        board.append(emptylist*BOARDSIZE)
     return board
 
 def print_column_letters():
@@ -27,18 +26,16 @@ def print_board(board):
     '''
     print(' '*4,end='')                         # Spaces printed for column letter fitting
     print_column_letters()
-    rowcount=1
-    for row in board:
-        if rowcount<10:                         # Validates if row number is 10 
-            print(' '+str(rowcount),end=' ')    # or more for space fitting
+    for index,row in enumerate(board):
+        if index+1<10:                         # Validates if row number is 10 
+            print(' '+str(index+1),end=' ')    # or more for space fitting
         else:
-            print(rowcount,end=' ')
+            print(index+1,end=' ')
         for column in row:
             if column=='':
                 print('|'+' ',end='')
             else:
                 print('|'+column,end='')
         print('|')
-        rowcount+=1
 
 print_board(initialize_board())
