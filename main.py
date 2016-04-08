@@ -16,8 +16,7 @@ def print_column_letters():
     '''Prints the column identificatory letters (A,B..) 
     in the upper side of the board
     '''
-    RANGE='1234567890'                  # Test in order to make finding
-    for letter in RANGE[:BOARDSIZE]:    # the center of the board easier
+    for letter in ascii_uppercase[:BOARDSIZE]:
         print(letter,end=' ')
     print()
 
