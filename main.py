@@ -2,9 +2,12 @@ from string import ascii_uppercase
 
 BOARDSIZE = 10
 
-def empty_board():
-    ''' Initializes the board, as an empty board.
-    Returns the board (list)
+def check_boardsize(BOARDSIZE):
+    if BOARDSIZE%2 != 0:
+        return 'Board size must be pair'
+
+def create_board():
+    ''' Returns an empty board, returns a list
     '''
     emptylist = ['']
     board = []
@@ -13,9 +16,10 @@ def empty_board():
     return board
 
 def initialize_board():
-    board = empty_board()
-    if BOARDSIZE%2!=0:
-        return None
+    ''' Initializes the board: takes the empty
+    board and adds starting chips in the center
+    '''
+    board = create_board()
     centerindex2 = BOARDSIZE//2
     centerindex1 = centerindex2 - 1
     board[centerindex1][centerindex1] = 'X'
@@ -29,8 +33,7 @@ def print_column_letters():
     '''Prints the column identificatory letters (A,B..) 
     in the upper side of the board
     '''
-    RANGE = '1234567890'
-    for letter in RANGE[:BOARDSIZE]:   #THIS COMMIT IS FOR TESTS 2
+    for letter in RANGE[:BOARDSIZE]:
         print(letter,end=' ')
     print()
 
