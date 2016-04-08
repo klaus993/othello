@@ -1,6 +1,6 @@
 from string import ascii_uppercase
 
-BOARDSIZE = 10
+BOARDSIZE = 8
 
 def check_boardsize(BOARDSIZE):
     if BOARDSIZE%2 != 0:
