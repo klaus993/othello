@@ -17,7 +17,7 @@ def print_column_letters():
     in the upper side of the board
     '''
     RANGE='1234567890'
-    for letter in RANGE[:BOARDSIZE]:   #THIS COMMIT IS FOR TESTS
+    for letter in RANGE[:BOARDSIZE]:   #THIS COMMIT IS FOR TESTS 2
         print(letter,end=' ')
     print()
 
