@@ -1,7 +1,9 @@
-from string import ascii_uppercase
+# from string import ascii_uppercase
 
 
 BOARD_SIZE = 8
+WHITE_PLAYER = 'B'
+BLACK_PLAYER = 'N'
 
 def check_boardsize(BOARD_SIZE):
     ''' Checks if the board size is even or odd
@@ -25,10 +27,10 @@ def initialize_board():
     board = create_board()
     centerindex2 = BOARD_SIZE//2
     centerindex1 = centerindex2 - 1
-    board[centerindex1][centerindex1] = 'X'
-    board[centerindex1][centerindex2] = 'O'
-    board[centerindex2][centerindex1] = 'O'
-    board[centerindex2][centerindex2] = 'X'
+    board[centerindex1][centerindex1] = WHITE_PLAYER
+    board[centerindex1][centerindex2] = BLACK_PLAYER
+    board[centerindex2][centerindex1] = BLACK_PLAYER
+    board[centerindex2][centerindex2] = WHITE_PLAYER
     return board
 
 
@@ -63,11 +65,18 @@ def print_board(board):
 
 # print_board(initialize_board())
 
-def ask_input():
+def ask_input_white():
     ''' Asks the user the position to enter a chip (column,row)
     and returns the chip location as a string
     '''
-    chip_location = input('Ingrese una ficha (columna,fila): ')
+    chip_location = input('Color blanco: ingrese una ficha (columna,fila): ')
+    return chip_location
+
+def ask_input_black():
+    ''' Asks the user the position to enter a chip (column,row)
+    and returns the chip location as a string
+    '''
+    chip_location = input('Color negro: ingrese una ficha (columna,fila): ')
     return chip_location
 
 def return_column(chip_location):
@@ -80,14 +89,36 @@ def return_row(chip_location):
     '''
     return chip_location[2]
 
-def enter_chip(board,player):
+def enter_black_chip(board):
     ''' Enters a chip in the board given a board (list)
-    and a player ('X' or 'O') and returns the resulting board (list)
+    and a player ('B' or 'N') and returns the resulting board (list)
     '''
-    chip_location = ask_input()             #B,2
+    chip_location = ask_input_black()             #B,2
     column = return_column(chip_location)   #B
     row = int(return_row(chip_location))         #2
-    board[row - 1][ord(column) - 65]=player
+    board[row - 1][ord(column) - 65]=BLACK_PLAYER
     return board
 
-print_board(enter_chip(initialize_board(),'X'))
+def enter_white_chip(board):
+    ''' Enters a chip in the board given a board (list)
+    and a player ('B' or 'N') and returns the resulting board (list)
+    '''
+    chip_location = ask_input_white()             #B,2
+    column = return_column(chip_location)   #B
+    row = int(return_row(chip_location))         #2
+    board[row - 1][ord(column) - 65]=WHITE_PLAYER
+    return board
+
+def main():
+    playing = True
+    board = initialize_board()
+    while playing:
+        print_board(board)
+        board = enter_white_chip(board)
+        print_board(board)
+        board = enter_black_chip(board)
+        print_board(board)
+
+main()
+
+# print_board(enter_chip(initialize_board(),'B'))
