@@ -1,9 +1,10 @@
 from string import ascii_uppercase
 
-BOARDSIZE = 8
 
-def check_boardsize(BOARDSIZE):
-    if BOARDSIZE%2 != 0:
+BOARD_SIZE = 8
+
+def check_boardsize(BOARD_SIZE):
+    if BOARD_SIZE%2 != 0:
         return 'Board size must be pair'
 
 def create_board():
@@ -11,8 +12,8 @@ def create_board():
     '''
     emptylist = ['']
     board = []
-    for i in range(BOARDSIZE):
-        board.append(emptylist*BOARDSIZE)
+    for i in range(BOARD_SIZE):
+        board.append(emptylist*BOARD_SIZE)
     return board
 
 def initialize_board():
@@ -20,7 +21,7 @@ def initialize_board():
     board and adds starting chips in the center
     '''
     board = create_board()
-    centerindex2 = BOARDSIZE//2
+    centerindex2 = BOARD_SIZE//2
     centerindex1 = centerindex2 - 1
     board[centerindex1][centerindex1] = 'X'
     board[centerindex1][centerindex2] = 'O'
@@ -33,18 +34,22 @@ def print_column_letters():
     '''Prints the column identificatory letters (A,B..) 
     in the upper side of the board
     '''
-    for letter in ascii_uppercase[:BOARDSIZE]:
-        print(letter,end=' ')
+    print(' '*4,end='')  # Spaces printed for column letter fitting
+    for i in range(len(initialize_board())):
+        print(chr(i+65),end=' ')  # Adds 65 to match ascii uppercase code
     print()
+    # for letter in ascii_uppercase[:BOARD_SIZE]:
+    #     print(letter,end=' ')
+    # print()
 
 def print_board(board):
     '''Prints the board, given by parameter (a list)
     '''
-    print(' '*4,end='')                         # Spaces printed for column letter fitting
+    # print(' '*4,end='')                        
     print_column_letters()
     for index,row in enumerate(board):
         if index+1 < 10:                         # Validates if row number is 10 
-            print(' '+str(index+1),end=' ')    # or more for space fitting
+            print(' '+str(index+1),end=' ')      # or more for space fitting
         else:
             print(index+1,end=' ')
         for column in row:
@@ -54,4 +59,23 @@ def print_board(board):
                 print('|'+column,end='')
         print('|')
 
-print_board(initialize_board())
+# print_board(initialize_board())
+
+def ask_input():
+    chip_location = input('Ingrese una ficha (columna,fila): ')
+    return chip_location
+
+def return_column(chip_location):
+    return chip_location[0]
+
+def return_row(chip_location):
+    return chip_location[2]
+
+def enter_chip(board,player):
+    chip_location = ask_input()             #B,2
+    column = return_column(chip_location)   #B
+    row = int(return_row(chip_location))         #2
+    board[row - 1][ord(column) - 65]=player
+    return board
+
+print_board(enter_chip(initialize_board(),'X'))
