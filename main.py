@@ -4,8 +4,10 @@ from string import ascii_uppercase
 BOARD_SIZE = 8
 
 def check_boardsize(BOARD_SIZE):
+    ''' Checks if the board size is even or odd
+    '''
     if BOARD_SIZE%2 != 0:
-        return 'Board size must be pair'
+        return 'Board size must be even'
 
 def create_board():
     ''' Returns an empty board, returns a list
@@ -62,16 +64,26 @@ def print_board(board):
 # print_board(initialize_board())
 
 def ask_input():
+    ''' Asks the user the position to enter a chip (column,row)
+    and returns the chip location as a string
+    '''
     chip_location = input('Ingrese una ficha (columna,fila): ')
     return chip_location
 
 def return_column(chip_location):
+    ''' Returns the column location
+    '''
     return chip_location[0]
 
 def return_row(chip_location):
+    ''' Returns the row location
+    '''
     return chip_location[2]
 
 def enter_chip(board,player):
+    ''' Enters a chip in the board given a board (list)
+    and a player ('X' or 'O') and returns the resulting board (list)
+    '''
     chip_location = ask_input()             #B,2
     column = return_column(chip_location)   #B
     row = int(return_row(chip_location))         #2
