@@ -2,8 +2,8 @@
 
 
 BOARD_SIZE = 8
-WHITE_PLAYER = 'B'
-BLACK_PLAYER = 'N'
+WHITE_PLAYER = '0'
+BLACK_PLAYER = 'O'
 
 def check_boardsize(BOARD_SIZE):
     ''' Checks if the board size is even or odd
@@ -109,7 +109,11 @@ def enter_white_chip(board):
     board[row - 1][ord(column) - 65]=WHITE_PLAYER
     return board
 
+def capture_chip():
+    pass
+
 def main():
+    turn_number=1
     playing = True
     board = initialize_board()
     while playing:
@@ -118,6 +122,9 @@ def main():
         print_board(board)
         board = enter_black_chip(board)
         print_board(board)
+        turn_number+=1
+        if turn_number == 60:
+            playing = False
 
 main()
 
