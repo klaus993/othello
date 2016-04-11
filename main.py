@@ -1,13 +1,19 @@
 # BOARD_SIZE must be between [4, 26] and even
 BOARD_SIZE = 8
-WHITE_PLAYER = 'B'
-BLACK_PLAYER = 'N'
+PLAYER_1 = '\033[01mB\033[0m'
+PLAYER_2 = '\033[01m\033[90mN\033[0m'
+PLAYER_CHIPS = (PLAYER_1,PLAYER_2)
+INPUT_PROMPT = 'Ingrese una ficha (columna,fila): '
+PLAYER_1_PROMPT = 'Color blanco: '
+PLAYER_2_PROMPT = 'Color negro: '
+PROMPTS = (PLAYER_1_PROMPT,PLAYER_2_PROMPT)
 
-def check_boardsize(BOARD_SIZE):
+
+def check_boardsize():
     ''' Checks if the board size is even or odd
+    Returns True if even, False if odd.
     '''
-    if BOARD_SIZE%2 != 0:
-        return 'Board size must be even'
+    return BOARD_SIZE%2 == 0
 
 def create_board():
     ''' Returns an empty board, returns a list
@@ -25,10 +31,10 @@ def initialize_board():
     board = create_board()
     center_index_1 = BOARD_SIZE//2
     center_index_2 = center_index_1 - 1
-    board[center_index_2][center_index_2] = WHITE_PLAYER
-    board[center_index_2][center_index_1] = BLACK_PLAYER
-    board[center_index_1][center_index_2] = BLACK_PLAYER
-    board[center_index_1][center_index_1] = WHITE_PLAYER
+    board[center_index_2][center_index_2] = PLAYER_CHIPS[0]
+    board[center_index_2][center_index_1] = PLAYER_CHIPS[1]
+    board[center_index_1][center_index_2] = PLAYER_CHIPS[1]
+    board[center_index_1][center_index_1] = PLAYER_CHIPS[0]
     return board
 
 
@@ -57,18 +63,11 @@ def print_board(board):
                 print('|'+column,end='')
         print('|')
 
-def ask_input_white():
+def ask_input(player_prompt):
     ''' Asks the user the position to enter a chip (column,row)
     and returns the chip location as a string
     '''
-    chip_location = input('Color blanco: ingrese una ficha (columna,fila): ')
-    return chip_location
-
-def ask_input_black():
-    ''' Asks the user the position to enter a chip (column,row)
-    and returns the chip location as a string
-    '''
-    chip_location = input('Color negro: ingrese una ficha (columna,fila): ')
+    chip_location = input(player_prompt+INPUT_PROMPT)
     return chip_location
 
 def return_column(chip_location):
@@ -83,42 +82,33 @@ def return_row(chip_location):
     '''
     return chip_location[2]
 
-def enter_black_chip(board):
+def enter_chip(board,player_prompt,player):
     ''' Enters a black chip in the board given a board (list)
     and returns the resulting board (list)
     '''
-    chip_location = ask_input_black()
+    chip_location = ask_input(player_prompt)
     column = return_column(chip_location)
     row = int(return_row(chip_location))
-    board[row - 1][ord(column) - 65] = BLACK_PLAYER
+    column_ascii = ord(column)
+    board[row - 1][column_ascii - 65] = player
     return board
-
-def enter_white_chip(board):
-    ''' Enters a white chip in the board given a board (list)
-    and returns the resulting board (list)
-    '''
-    chip_location = ask_input_white()
-    column = return_column(chip_location)
-    row = int(return_row(chip_location))
-    column_ascii=ord(column)
-    board[row - 1][ord(column) - 65] = WHITE_PLAYER
-    return board
-
-def capture_chip():
-    pass
 
 def main():
     turn_count=1
     playing = True
     board = initialize_board()
-    while playing:
-        print_board(board)
-        board = enter_white_chip(board)
-        print_board(board)
-        board = enter_black_chip(board)
-        print_board(board)
-        turn_count+=1
-        if turn_count == 60:
-            playing = False
+    if check_boardsize():
+        while playing:
+            print_board(board)
+            board = enter_chip(board,PROMPTS[0],PLAYER_CHIPS[0])
+            print_board(board)
+            board = enter_chip(board,PROMPTS[1],PLAYER_CHIPS[1])
+            print_board(board)
+            turn_count+=1
+            if turn_count == 60:
+                playing = False
+    else:
+        print('El tamaño del tablero debe ser par')
+        return
 
 main()
