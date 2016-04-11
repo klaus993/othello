@@ -8,7 +8,6 @@ PLAYER_1_PROMPT = 'Color blanco: '
 PLAYER_2_PROMPT = 'Color negro: '
 PROMPTS = (PLAYER_1_PROMPT,PLAYER_2_PROMPT)
 
-
 def check_boardsize():
     ''' Checks if the board size is even or odd
     Returns True if even, False if odd.
@@ -36,7 +35,6 @@ def initialize_board():
     board[center_index_1][center_index_2] = PLAYER_CHIPS[1]
     board[center_index_1][center_index_1] = PLAYER_CHIPS[0]
     return board
-
 
 def print_column_letters():
     '''Prints the column identificatory letters (A,B..) 
