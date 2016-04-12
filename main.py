@@ -89,6 +89,22 @@ def enter_chip(board,player):
     board[row - 1][column_ascii - 65] = PLAYER_CHIPS[player]
     return board
 
+def is_valid_move(row,column,row_add,column_add,board,player):
+    if player == 0:
+        other_player = PLAYER_CHIPS[1]
+        current_player = PLAYER_CHIPS[0]
+    else:
+        other_player = PLAYER_CHIPS[0]
+        current_player = PLAYER_CHIPS[1]
+    if not board[row][column]:
+        return False
+    row+=row_add
+    column+=column_add
+    if board[row][column] != other_player:
+        return False
+    else:
+        is_valid_move(row,column,row_add,column_add,board,player)
+
 def main():
     turn_count = 1
     play_count = 1
