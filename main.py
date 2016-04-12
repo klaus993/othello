@@ -21,9 +21,9 @@ def create_board():
         board.append(empty_list*BOARD_SIZE)
     return board
 
-def initialize_board():
-    ''' Initializes the board: takes the empty
-    board and adds starting chips in the center
+def create_and_initialize_board():
+    ''' Creates an empty board and initializes it:
+    takes the empty board and adds starting chips in the center
     '''
     board = create_board()
     center_index_1 = BOARD_SIZE//2
@@ -35,11 +35,11 @@ def initialize_board():
     return board
 
 def print_column_letters():
-    '''Prints the column identificatory letters (A,B..) 
+    '''Prints the column identificatory letters (A,B,C,..) 
     in the upper side of the board
     '''
     print(' '*4,end='')  # Spaces printed for column letter fitting
-    for i in range(len(initialize_board())):
+    for i in range(len(create_and_initialize_board())):
         print(chr(i+65),end=' ')  # Adds 65 to match ascii uppercase code
     print()
 
@@ -80,7 +80,7 @@ def return_row(chip_location):
 
 def enter_chip(board,player):
     ''' Enters a black chip in the board given a board (list)
-    and returns the resulting board (list)
+    and a player (0 or 1) and returns the resulting board (list)
     '''
     chip_location = ask_input(player)
     column = return_column(chip_location)
@@ -89,13 +89,11 @@ def enter_chip(board,player):
     board[row - 1][column_ascii - 65] = PLAYER_CHIPS[player]
     return board
 
-
-
 def main():
     turn_count = 1
     play_count = 1
     playing = True
-    board = initialize_board()
+    board = create_and_initialize_board()
     if check_boardsize():
         while playing:
             print('Turn '+str(turn_count))
@@ -113,5 +111,3 @@ def main():
         return
 
 main()
-# board=initialize_board()
-# enter_chip(board,1)
