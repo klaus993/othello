@@ -58,13 +58,12 @@ def print_board(board):
             else:
                 print('|'+column,end='')
         print('|')
-    print('Color',end=' ')
 
 def ask_input(player):
     ''' Asks the user the position to enter a chip (column,row)
     and returns the chip location as a string
     '''
-    chip_location = input(PLAYER_COLORS[player]+': '+INPUT_PROMPT)
+    chip_location = input('Color '+PLAYER_COLORS[player]+': '+INPUT_PROMPT)
     return chip_location
 
 def return_column(chip_location):
