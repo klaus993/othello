@@ -90,14 +90,24 @@ def enter_chip(board,player):
     return board
 
 def is_valid_move(row,column,row_add,column_add,board,player):
-    if not board[row][column]:
-        return False
-    row+=row_add
-    column+=column_add
-    if board[row][column] == PLAYER_CHIPS[player]:
-        return False
+    # if not board[row][column]:
+    #     return False
+    if player == 1:
+        other_player = 0
     else:
-        is_valid_move(row,column,row_add,column_add,board,player)
+        other_player = 1
+    row += row_add
+    column += column_add
+
+    if row >= BOARD_SIZE or column >= BOARD_SIZE or
+        (board[row][column] == PLAYER_CHIPS[player] and
+        (board[row-row_add][column-column_add] == PLAYER_CHIPS[player] or
+        not board[row-row_add][column-column_add])):
+        return False
+    elif (board[row][column] == PLAYER_CHIPS[player]):
+        return True
+
+    is_valid_move(row,column,row_add,column_add,board,player)
 
 def main():
     turn_count = 1
@@ -120,4 +130,6 @@ def main():
         print('El tamaño del tablero debe ser par')
         return
 
-main()
+board = create_and_initialize_board()
+print(is_valid_move(0,1,0,1,board,1))
+print_board(board)
