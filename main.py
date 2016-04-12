@@ -1,12 +1,10 @@
 # BOARD_SIZE must be between [4, 26] and even
 BOARD_SIZE = 8
-PLAYER_1 = '\033[01mB\033[0m'
-PLAYER_2 = '\033[01m\033[90mN\033[0m'
-PLAYER_CHIPS = (PLAYER_1,PLAYER_2)
-INPUT_PROMPT = 'Ingrese una ficha (columna,fila): '
-PLAYER_1_PROMPT = 'Color blanco: '
-PLAYER_2_PROMPT = 'Color negro: '
-PROMPTS = (PLAYER_1_PROMPT,PLAYER_2_PROMPT)
+PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
+PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
+PLAYER_CHIPS = (PLAYER_0,PLAYER_1)
+INPUT_PROMPT = 'ingrese una ficha (columna,fila): '
+PLAYER_COLORS = ('blanco','negro')
 
 def check_boardsize():
     ''' Checks if the board size is even or odd
@@ -60,12 +58,13 @@ def print_board(board):
             else:
                 print('|'+column,end='')
         print('|')
+    print('Color',end=' ')
 
-def ask_input(player_prompt):
+def ask_input(player):
     ''' Asks the user the position to enter a chip (column,row)
     and returns the chip location as a string
     '''
-    chip_location = input(player_prompt+INPUT_PROMPT)
+    chip_location = input(PLAYER_COLORS[player]+': '+INPUT_PROMPT)
     return chip_location
 
 def return_column(chip_location):
@@ -80,29 +79,34 @@ def return_row(chip_location):
     '''
     return chip_location[2]
 
-def enter_chip(board,player_prompt,player):
+def enter_chip(board,player):
     ''' Enters a black chip in the board given a board (list)
     and returns the resulting board (list)
     '''
-    chip_location = ask_input(player_prompt)
+    chip_location = ask_input(player)
     column = return_column(chip_location)
     row = int(return_row(chip_location))
     column_ascii = ord(column)
-    board[row - 1][column_ascii - 65] = player
+    board[row - 1][column_ascii - 65] = PLAYER_CHIPS[player]
     return board
 
+
+
 def main():
-    turn_count=1
+    turn_count = 1
+    play_count = 1
     playing = True
     board = initialize_board()
     if check_boardsize():
         while playing:
-            print_board(board)
-            board = enter_chip(board,PROMPTS[0],PLAYER_CHIPS[0])
-            print_board(board)
-            board = enter_chip(board,PROMPTS[1],PLAYER_CHIPS[1])
-            print_board(board)
-            turn_count+=1
+            print('Turn '+str(turn_count))
+            for i in range(2):
+                print('Play '+str(play_count))
+                print_board(board)
+                board = enter_chip(board,i)
+                print_board(board)
+                play_count += 1
+            turn_count += 1
             if turn_count == 60:
                 playing = False
     else:
@@ -110,3 +114,5 @@ def main():
         return
 
 main()
+# board=initialize_board()
+# enter_chip(board,1)
