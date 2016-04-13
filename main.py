@@ -1,5 +1,5 @@
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 14
+BOARD_SIZE = 8
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
@@ -8,15 +8,16 @@ PLAYER_COLORS = ('blanco', 'negro')
 
 
 def check_boardsize():
-    ''' Checks if the board size is even or odd
+    """ Checks if the board size is even or odd
     Returns True if even, False if odd.
-    '''
+    """
     return BOARD_SIZE % 2 == 0
 
 
 def create_board():
-    ''' Returns an empty board, returns a list
-    '''
+    """ Returns an empty board, returns a list
+
+    """
     empty_list = ['']
     board = []
     for i in range(BOARD_SIZE):
@@ -25,9 +26,9 @@ def create_board():
 
 
 def create_and_initialize_board():
-    ''' Creates an empty board and initializes it:
+    """ Creates an empty board and initializes it:
     takes the empty board and adds starting chips in the center
-    '''
+    """
     board = create_board()
     center_index_1 = BOARD_SIZE//2
     center_index_2 = center_index_1 - 1
@@ -39,9 +40,9 @@ def create_and_initialize_board():
 
 
 def print_column_letters():
-    ''' Prints the column identificatory letters
+    """ Prints the column identificatory letters
     (A,B,C,..) in the upper side of the board
-    '''
+    """
     print(' '*4, end='')    # Spaces printed for column letter fitting
     for i in range(len(create_and_initialize_board())):
         print(chr(i+65), end=' ')  # Adds 65 to match ascii uppercase code
@@ -49,11 +50,12 @@ def print_column_letters():
 
 
 def print_board(board):
-    '''Prints the board, given by parameter (a list)
-    '''
+    """Prints the board, given by parameter (a list)
+
+    """
     print_column_letters()
     for index, row in enumerate(board):
-        if (index+1) < 10:                     # Validates if row number is 10 
+        if (index+1) < 10:                     # Validates if row number is 10
             print(' '+str(index + 1), end=' ') # or more for space fitting
         else:
             print(index+1, end=' ')
@@ -66,57 +68,65 @@ def print_board(board):
 
 
 def ask_input(player):
-    ''' Asks the user the position to enter a chip (column,row)
+    """ Asks the user the position to enter a chip (column,row)
     and returns the chip location as a string
-    '''
+    """
     chip_location = input('Color '+PLAYER_COLORS[player]+': '+INPUT_PROMPT)
     return chip_location
 
 
 def return_column(chip_location):
-    ''' Given a string chip_location, returns
+    """ Given a string chip_location, returns
     the column location (string, a letter) in uppercase
-    '''
+    """
     return chip_location.split()[0].upper()
     # return chip_location[0].upper()
 
 
 def return_row(chip_location):
-    ''' Given a string chip_location, returns
+    """ Given a string chip_location, returns
     the row location (string, a number)
-    '''
+    """
     return chip_location.split()[1]
 
 
 def enter_chip(board, player):
-    ''' Enters a black chip in the board given a board (list)
+    """ Enters a black chip in the board given a board (list)
     and a player (0 or 1) and returns the resulting board (list)
-    '''
+    """
     chip_location = ask_input(player)
     column = return_column(chip_location)
     row = int(return_row(chip_location))
     column_ascii = ord(column)
-    board[row - 1][column_ascii - 65] = PLAYER_CHIPS[player]
-    return board
+    literal_column = column_ascii-65
+    if is_valid_move(row-1, literal_column, 0, 1, board, player):
+        board[row - 1][column_ascii - 65] = PLAYER_CHIPS[player]
+        return board
+    else:
+        return 1
 
 
 def is_valid_move(row, column, row_add, column_add, board, player):
     # if not board[row][column]:
     #     return False
+    empty = ''
     if player == 1:
         other_player = 0
     else:
         other_player = 1
     row += row_add
     column += column_add
+    # print(row, column)
     if (row >= BOARD_SIZE or column >= BOARD_SIZE or
-        (board[row-row_add][column-column_add] != PLAYER_CHIPS[player] and
-            board[row][column] != PLAYER_CHIPS[player]) or
-        (board[row-row_add][column-column_add] != PLAYER_CHIPS[other_player]) and
-            board[row][column] != PLAYER_CHIPS[other_player]):
+        (board[row-row_add][column-column_add] == PLAYER_CHIPS[player] and
+            board[row][column] == PLAYER_CHIPS[player]) or
+        (board[row-row_add][column-column_add] == PLAYER_CHIPS[other_player]) and
+            board[row][column] == PLAYER_CHIPS[other_player]):
         return False
+    if (board[row-row_add][column-column_add] == empty and (board[row][column] == PLAYER_CHIPS[other_player] and board[row+row_add][column+column_add])):
+        return True
     else:
-        return False
+        return '1'
     # if (board[row][column] == PLAYER_CHIPS[player]):
     #     return True
     is_valid_move(row, column, row_add, column_add, board, player)
