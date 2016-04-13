@@ -142,9 +142,3 @@ def main():
     else:
         print('El tamaño del tablero debe ser par')
         return
-
-# board = create_and_initialize_board()
-# print(is_valid_move(0,1,0,1,board,1))
-# print_board(board)
-
-# print(return_row('B 03'))
