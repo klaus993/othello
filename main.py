@@ -1,9 +1,9 @@
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 8
+BOARD_SIZE = 14
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0,PLAYER_1)
-INPUT_PROMPT = 'ingrese una ficha (columna,fila): '
+INPUT_PROMPT = 'ingrese una ficha (columna fila): '
 PLAYER_COLORS = ('blanco','negro')
 
 def check_boardsize():
@@ -70,13 +70,14 @@ def return_column(chip_location):
     ''' Given a string chip_location, returns
     the column location (string, a letter) in uppercase
     '''
-    return chip_location[0].upper()
+    return chip_location.split()[0].upper()
+    # return chip_location[0].upper()
 
 def return_row(chip_location):
     ''' Given a string chip_location, returns
     the row location (string, a number)
     '''
-    return chip_location[2]
+    return chip_location.split()[1]
 
 def enter_chip(board,player):
     ''' Enters a black chip in the board given a board (list)
@@ -98,15 +99,16 @@ def is_valid_move(row,column,row_add,column_add,board,player):
         other_player = 1
     row += row_add
     column += column_add
-
-    if row >= BOARD_SIZE or column >= BOARD_SIZE or
-        (board[row][column] == PLAYER_CHIPS[player] and
-        (board[row-row_add][column-column_add] == PLAYER_CHIPS[player] or
-        not board[row-row_add][column-column_add])):
+    if (row >= BOARD_SIZE or column >= BOARD_SIZE or
+        (board[row-row_add][column-column_add] != PLAYER_CHIPS[player] and
+            board[row][column] != PLAYER_CHIPS[player]) or
+        (board[row-row_add][column-column_add] != PLAYER_CHIPS[other_player]) and
+        board[row][column] != PLAYER_CHIPS[other_player]):
         return False
-    elif (board[row][column] == PLAYER_CHIPS[player]):
-        return True
-
+    else:
+        return False
+    # if (board[row][column] == PLAYER_CHIPS[player]):
+    #     return True
     is_valid_move(row,column,row_add,column_add,board,player)
 
 def main():
@@ -130,6 +132,8 @@ def main():
         print('El tamaño del tablero debe ser par')
         return
 
-board = create_and_initialize_board()
-print(is_valid_move(0,1,0,1,board,1))
-print_board(board)
+# board = create_and_initialize_board()
+# print(is_valid_move(0,1,0,1,board,1))
+# print_board(board)
+
+# print(return_row('B 03'))
