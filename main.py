@@ -109,21 +109,23 @@ def enter_chip(board, player):
 def is_valid_move(row, column, row_add, column_add, board, player):
     # if not board[row][column]:
     #     return False
-    empty = ''
     if player == 1:
         other_player = 0
     else:
         other_player = 1
-    row += row_add
-    column += column_add
+    current_row = old_row + row_add
+    current_col = old_col + col_add
     # print(row, column)
-    if (row >= BOARD_SIZE or column >= BOARD_SIZE or
-        (board[row-row_add][column-column_add] == PLAYER_CHIPS[player] and
-            board[row][column] == PLAYER_CHIPS[player]) or
-        (board[row-row_add][column-column_add] == PLAYER_CHIPS[other_player]) and
-            board[row][column] == PLAYER_CHIPS[other_player]):
+    if (current_row >= BOARD_SIZE or current_col >= BOARD_SIZE or
+        (board[current_row][current_col] == PLAYER_CHIPS[player] and
+            board[old_row][old_col] == PLAYER_CHIPS[player]) or
+        (board[old_row][old_col] == PLAYER_CHIPS[player] or
+            (not board[current_row][current_col]) or
+            (not board[old_row][old_col]
+             and board[current_row][current_col] == PLAYER_CHIPS[player]))):
         return False
-    if (board[row-row_add][column-column_add] == empty and (board[row][column] == PLAYER_CHIPS[other_player] and board[row+row_add][column+column_add])):
+    if (board[old_row][old_col] != PLAYER_CHIPS[player] and
+            board[current_row][current_col] == PLAYER_CHIPS[player]):
         return True
     else:
         return '1'
@@ -152,3 +154,5 @@ def main():
     else:
         print('El tamaño del tablero debe ser par')
         return
+
+main()
