@@ -132,12 +132,30 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
             board[current_row][current_col] == PLAYER_CHIPS[player]):
         return True
 
-    is_valid_direction(current_row, current_col, row_add, col_add, board, player)
+    return is_valid_direction(current_row, current_col, row_add, col_add, board, player)
+
+def chip_turn_stop(old_row, old_col, row_add, col_add, board, player):
+    """
+    """
+    current_row = old_row + row_add
+    current_col = old_col + col_add
+    if (current_row >= BOARD_SIZE or current_col >= BOARD_SIZE or
+        (board[current_row][current_col] == PLAYER_CHIPS[player] and
+            board[old_row][old_col] == PLAYER_CHIPS[player]) or
+        (board[old_row][old_col] == PLAYER_CHIPS[player] or
+            (not board[current_row][current_col]) or
+            (not board[old_row][old_col] and
+                board[current_row][current_col] == PLAYER_CHIPS[player]))):
+        return None
+    if (board[old_row][old_col] != PLAYER_CHIPS[player] and
+            board[current_row][current_col] == PLAYER_CHIPS[player]):
+        return current_row, current_col
+
+    return is_valid_direction(current_row, current_col, row_add, col_add, board, player)
 
 
 def main():
     turn_count = 1
-    play_count = 1
     playing = True
     board = create_and_initialize_board()
     if check_boardsize():
@@ -147,8 +165,7 @@ def main():
                 print('Play '+str(play_count))
                 print_board(board)
                 board = enter_chip(board, i)
-                print_board(board)cuand
-                play_count += 1
+                print_board(board)
             turn_count += 1
             if turn_count == 60:
                 playing = False
