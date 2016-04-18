@@ -3,7 +3,7 @@ from string import ascii_letters
 
 
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 8
+BOARD_SIZE = 4
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
@@ -128,7 +128,7 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
     """
     current_row = old_row + row_add
     current_col = old_col + col_add
-    if (current_row >= BOARD_SIZE or current_col >= BOARD_SIZE or      # Checks all the posibilities
+    if (current_row not in range(BOARD_SIZE) or current_col not in range(BOARD_SIZE) or      # Checks all the posibilities
         (board[current_row][current_col] == PLAYER_CHIPS[player] and   # which result in an invalid conversion
             board[old_row][old_col] == PLAYER_CHIPS[player]) or
         (board[old_row][old_col] == PLAYER_CHIPS[player] or
@@ -225,11 +225,10 @@ def main():
                 if check_all_moves(board, i):
                     while not enter_chip(board, i):  # Enters the cycle only if there is an input error.
                         print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
-                    if no_plays_count != 0:         # Resets counter in case there was
-                        no_plays_count = 0          # only one play with no possible moves.
                 else:
                     print('Color '+PLAYER_COLORS[i]+': no tienes jugadas posibles')
-                    no_plays_count += 1
+                    if not check_all_moves(board, i-1):
+                        break
                     sleep(1)
             if no_plays_count == 2:      # If it reaches 2 it means that two consecutive
                 break                    # plays were not possible, in that case the cycle
