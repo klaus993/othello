@@ -100,10 +100,7 @@ def enter_chip(board, player):
     Also checks syntax for user chip input and move validity.
     """
     chip_location = ask_input(player)
-    string_col = chip_location[0]
-    string_space = chip_location[1]
-    string_row = chip_location[2]
-    if not chip_location or string_col not in ascii_letters or string_row != ' ' or not string_row.isdigit():
+    if not chip_location or chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit():
         return False
     col = return_col(chip_location)
     row = int(return_row(chip_location))
@@ -143,7 +140,9 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
 
 
 def valid_directions(row, col, board, player):
-    """
+    """Checks validity of move in all directions and 
+    appends the boolean value to a list. Returns a list with
+    8 boolean values (corresponding to the 8 senses).
     """
     moves = []
     for i, j in incrementers:
@@ -152,7 +151,9 @@ def valid_directions(row, col, board, player):
 
 
 def chip_turn(row, col, row_add, col_add, board, player):
-    """
+    """Pre: given direction must be a valid move.
+    Turns all the chips between the desired location
+    and the next current player chip.
     """
     row += row_add
     col += col_add
@@ -164,6 +165,8 @@ def chip_turn(row, col, row_add, col_add, board, player):
 
 
 def count_chips(board, player):
+    """Given a board, counts the chips of a given player
+    """
     cont = 0
     for row in board:
         for col in row:
@@ -173,6 +176,9 @@ def count_chips(board, player):
 
 
 def check_all_moves(board, player):
+    """Given a board, checks all the remaining empty slots and returns True
+    if a conversion in *any* direction is valid
+    """
     moves = []
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
@@ -183,7 +189,8 @@ def check_all_moves(board, player):
 
 
 def winner(board):
-    """
+    """Given a board, checks the winner of the game by counting
+    the chips of both players. Prints a message and the correspondings points
     """
     player_0_points = count_chips(board, 0)
     player_1_points = count_chips(board, 1)
@@ -199,7 +206,7 @@ def winner(board):
 
 
 def main():
-    """Main function.
+    """Main function. Main flow of the game.
     """
     print('¡Bienvenido al Reversi!')
     sleep(1)
