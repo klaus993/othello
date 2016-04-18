@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 from string import ascii_letters
 
 
@@ -9,7 +10,7 @@ PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
 INPUT_PROMPT = 'ingrese una ficha (columna fila): '
 PLAYER_COLORS = ('blanco', 'negro')
-incrementers = ((1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1))
+incrementers = (1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1)
 
 
 def check_boardsize():
@@ -168,15 +169,25 @@ def count_chips(board, player):
     return cont
 
 
-def winner(board, player):
+def winner(board):
     """
     """
-    pass
+    player_0_points = count_chips(board, 0)
+    player_1_points = count_chips(board, 1)
+    if player_0_points > player_1_points:
+        print('¡El color '+PLAYER_COLORS[0]+' ha ganado la partida!')
+    else:
+        print('¡El color '+PLAYER_COLORS[1]+' ha ganado la partida!')
+    print('Puntajes:')
+    print(PLAYER_COLORS[0].title()+': '+str(player_0_points)+' punto(s)')
+    print(PLAYER_COLORS[1].title()+': '+str(player_1_points)+' punto(s)')
 
 
 def main():
     """Main function.
     """
+    print('¡Bienvenido al Reversi!')
+    sleep(2)
     turn_count = 1
     playing = True
     board = create_and_initialize_board()
@@ -190,7 +201,7 @@ def main():
             turn_count += 1
             if turn_count == 61:
                 playing = False
-        if count_chips(board,0) > count_chips(board, 1):
+        if count_chips(board, 0) > count_chips(board, 1):
             print('El jugador '+PLAYER_COLORS[0]+' ha ganado!\n')
     else:
         print('El tamaño del tablero debe ser par')
