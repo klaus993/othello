@@ -4,7 +4,7 @@ from string import ascii_letters
 
 
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 8
+BOARD_SIZE = 3
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
@@ -17,6 +17,7 @@ def check_boardsize():
     """ Checks if the board size is even or odd
     Returns True if even, False if odd¿ m¿  .
     """
+    return True
     return BOARD_SIZE % 2 == 0
 
 
@@ -101,12 +102,14 @@ def enter_chip(board, player):
     Also checks syntax for user chip input and move validity
     """
     chip_location = ask_input(player)
+    if not chip_location or chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit():
+        return False
     col = return_col(chip_location)
     row = int(return_row(chip_location))
     col_ascii = ord(col)
     literal_col = col_ascii-65
     literal_row = row-1
-    if chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit() or (not True in valid_directions(literal_row, literal_col, board, player)):
+    if (not True in valid_directions(literal_row, literal_col, board, player)):
         return False
     flag = False
     for i in range(8):
@@ -170,11 +173,12 @@ def count_chips(board, player):
 
 def check_all_moves(board, player):
     moves = []
-    for i, j in incrementers:
-        for k in range(7, -1, -1):
-            for l in range(i+1):
-                moves.append(is_valid_direction(k, l, i, j, board, player))
-    return moves
+    for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            for k,l in incrementers:
+                if not board[i][j]:
+                    moves.append(is_valid_direction(i, j, k, l, board, player))
+    return True in moves
 
 
 def winner(board):
@@ -184,6 +188,8 @@ def winner(board):
     player_1_points = count_chips(board, 1)
     if player_0_points > player_1_points:
         print('¡El color '+PLAYER_COLORS[0]+' ha ganado la partida!')
+    elif player_0_points == player_1_points:
+        print('¡Empate!\n')
     else:
         print('¡El color '+PLAYER_COLORS[1]+' ha ganado la partida!')
     print('Puntajes:')
@@ -195,7 +201,7 @@ def main():
     """Main function.
     """
     print('¡Bienvenido al Reversi!')
-    sleep(2)
+    sleep(1)
     turn_count = 1
     playing = True
     board = create_and_initialize_board()
@@ -204,15 +210,18 @@ def main():
             print('Turn '+str(turn_count))
             for i in range(2):
                 print_board(board)
-                while not enter_chip(board, i):
-                    print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
+                if check_all_moves(board, i):
+                    while not enter_chip(board, i):
+                        print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
+                else:
+                    print('Color '+PLAYER_COLORS[i]+': no tienes jugadas posibles')
+                    sleep(1)
+                    break
             turn_count += 1
-            if turn_count == 61:
+            if turn_count == 4:
                 playing = False
-        if count_chips(board, 0) > count_chips(board, 1):
-            print('El jugador '+PLAYER_COLORS[0]+' ha ganado!\n')
+        winner(board)
     else:
         print('El tamaño del tablero debe ser par')
-        sys.exit()  # Terminates the program
 
-# main()
+main()
