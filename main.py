@@ -1,4 +1,6 @@
+import sys
 from string import ascii_letters
+
 
 # BOARD_SIZE must be between [4, 26] and even
 BOARD_SIZE = 8
@@ -18,8 +20,7 @@ def check_boardsize():
 
 
 def create_board():
-    """ Returns an empty board, returns a list
-
+    """ Returns an empty board, a list
     """
     empty_list = ['']
     board = []
@@ -100,13 +101,13 @@ def enter_chip(board, player):
     Also checks syntax for user chip input and move validity
     """
     chip_location = ask_input(player)
-    if chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit():
-        return False
     col = return_col(chip_location)
     row = int(return_row(chip_location))
     col_ascii = ord(col)
     literal_col = col_ascii-65
     literal_row = row-1
+    if chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit() or (not True in valid_directions(literal_row, literal_col, board, player)):
+        return False
     flag = False
     for i in range(8):
         if valid_directions(literal_row, literal_col, board, player)[i]:
@@ -138,6 +139,8 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
 
 
 def valid_directions(row, col, board, player):
+    """
+    """
     moves = []
     for i, j in incrementers:
         moves.append(is_valid_direction(row, col, i, j, board, player))
@@ -156,12 +159,24 @@ def chip_turn(row, col, row_add, col_add, board, player):
     return chip_turn(row, col, row_add, col_add, board, player)
 
 
-# def check_any_valid_move(board, player):
-#     moves = []
-#     for i in range(BOARD)
+def count_chips(board, player):
+    cont = 0
+    for row in board:
+        for col in row:
+            if col == PLAYER_CHIPS[player]:
+                cont += 1
+    return cont
+
+
+def winner(board, player):
+    """
+    """
+    pass
 
 
 def main():
+    """Main function.
+    """
     turn_count = 1
     playing = True
     board = create_and_initialize_board()
@@ -175,8 +190,10 @@ def main():
             turn_count += 1
             if turn_count == 61:
                 playing = False
+        if count_chips(board,0) > count_chips(board, 1):
+            print('El jugador '+PLAYER_COLORS[0]+' ha ganado!\n')
     else:
         print('El tamaño del tablero debe ser par')
-        return
+        sys.exit()  # Terminates the program
 
 main()
