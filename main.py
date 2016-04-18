@@ -5,6 +5,7 @@ PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
 INPUT_PROMPT = 'ingrese una ficha (columna fila): '
 PLAYER_COLORS = ('blanco', 'negro')
+incrementers = ((1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1))
 
 
 def check_boardsize():
@@ -101,7 +102,7 @@ def enter_chip(board, player):
     col_ascii = ord(col)
     literal_col = col_ascii-65
     literal_row = row-1
-    moves = []
+    moves = []#   abajo  ab.d.der ab.d.izq  der     izq      arriba  arr.d.der arr.d.izq
     # for i, j in (1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1):
     #     moves.append(is_valid_direction(literal_row, literal_col, i, j, board, player))
 
@@ -112,14 +113,11 @@ def enter_chip(board, player):
         return 1
 
 
+#                        5       4
 def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
     """ Returns True if the move is valid in a given direction.
     Direction is given by row_add and col_add incrementers.
     """
-    if player == 1:
-        other_player = 0
-    else:
-        other_player = 1
     current_row = old_row + row_add
     current_col = old_col + col_add
     if (current_row >= BOARD_SIZE or current_col >= BOARD_SIZE or
@@ -132,10 +130,9 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
         return False
     if (board[old_row][old_col] != PLAYER_CHIPS[player] and
             board[current_row][current_col] == PLAYER_CHIPS[player]):
-        return True, old_row, old_col
-    else:
-        return '1'
-    is_valid_move(current_row, current_col, row_add, col_add, board, player)
+        return True
+
+    is_valid_direction(current_row, current_col, row_add, col_add, board, player)
 
 
 def main():
@@ -150,7 +147,7 @@ def main():
                 print('Play '+str(play_count))
                 print_board(board)
                 board = enter_chip(board, i)
-                print_board(board)
+                print_board(board)cuand
                 play_count += 1
             turn_count += 1
             if turn_count == 60:
@@ -159,4 +156,11 @@ def main():
         print('El tamaño del tablero debe ser par')
         return
 
-main()
+# main()
+
+
+def boolean_list(board, player, row, col):
+    moves = []
+    for i, j in incrementers:
+        moves.append(is_valid_direction(row, col, i, j, board, player))
+    return moves
