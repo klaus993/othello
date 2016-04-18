@@ -45,12 +45,12 @@ def create_and_initialize_board():
 
 
 def print_col_letters():
-    """ Prints the col identificatory letters
+    """ Prints the col identification letters
     (A,B,C,..) in the upper side of the board
     """
     print(' '*4, end='')    # Spaces printed for col letter fitting
     for i in range(len(create_and_initialize_board())):
-        print(chr(i+65), end=' ')  # Adds 65 to match ascii uppercase code
+        print(chr(i+65), end=' ')  # Adds 65 to match ASCII uppercase code
     print()
 
 
@@ -85,7 +85,6 @@ def return_col(chip_location):
     the col location (string, a letter) in uppercase
     """
     return chip_location.split()[0].upper()
-    # return chip_location[0].upper()
 
 
 def return_row(chip_location):
@@ -169,6 +168,15 @@ def count_chips(board, player):
     return cont
 
 
+def check_all_moves(board, player):
+    moves = []
+    for i, j in incrementers:
+        for k in range(7, -1, -1):
+            for l in range(i+1):
+                moves.append(is_valid_direction(k, l, i, j, board, player))
+    return moves
+
+
 def winner(board):
     """
     """
@@ -207,4 +215,4 @@ def main():
         print('El tamaño del tablero debe ser par')
         sys.exit()  # Terminates the program
 
-main()
+# main()
