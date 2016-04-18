@@ -3,7 +3,8 @@ from string import ascii_letters
 
 
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 4
+BOARD_SIZE = 2
+PLAYERS = 0, 1
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
@@ -185,8 +186,8 @@ def check_all_moves(board, player):
     moves = []
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
-            for row_add, col_add in incrementers:
-                if not board[i][j]:
+            if not board[i][j]:
+                for row_add, col_add in incrementers:
                     moves.append(is_valid_direction(i, j, row_add, col_add, board, player))
     return True in moves
 
@@ -214,7 +215,6 @@ def main():
     print('¡Bienvenido al Reversi!')
     sleep(1)
     turn_count = 1         # Turn counter, used for 60 turns limit.
-    no_plays_count = 0     # Used in case there is no more possible moves for
     playing = True         # any player, if it reaches 2, breaks the cycle and ends the game.
     board = create_and_initialize_board()
     if check_boardsize():
@@ -222,16 +222,14 @@ def main():
             print('Turno '+str(turn_count))
             for i in range(2):
                 print_board(board)
-                if check_all_moves(board, i):
+                if check_all_moves(board, PLAYERS[i]):
                     while not enter_chip(board, i):  # Enters the cycle only if there is an input error.
                         print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
                 else:
                     print('Color '+PLAYER_COLORS[i]+': no tienes jugadas posibles')
-                    if not check_all_moves(board, i-1):
+                    if not check_all_moves(board, PLAYERS[i-1]):
                         break
                     sleep(1)
-            if no_plays_count == 2:      # If it reaches 2 it means that two consecutive
-                break                    # plays were not possible, in that case the cycle
             turn_count += 1              # breaks and the game ends.
             if turn_count == MAX_TURNS:
                 playing = False
