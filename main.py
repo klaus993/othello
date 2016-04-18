@@ -9,6 +9,7 @@ PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
 PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
 INPUT_PROMPT = 'ingrese una ficha (columna fila): '
 PLAYER_COLORS = ('blanco', 'negro')
+MAX_TURNS = 61
 incrementers = (1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1)
 
 
@@ -101,7 +102,7 @@ def enter_chip(board, player):
     """
     chip_location = ask_input(player)
     if not chip_location or chip_location[0] not in ascii_letters or chip_location[1] != ' ' or not chip_location[2].isdigit():
-    # Covers every other input than the correct syntax (column row)
+            # Covers every other input than the correct syntax (column row)
         return False
     col = return_col(chip_location)
     row = int(return_row(chip_location))
@@ -135,14 +136,14 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
             (not board[old_row][old_col] and
                 board[current_row][current_col] == PLAYER_CHIPS[player]))):
         return False
-    if (board[old_row][old_col] != PLAYER_CHIPS[player] and            # Checks whether previous chip is 
-            board[current_row][current_col] == PLAYER_CHIPS[player]):  # from the enemy player, and current 
+    if (board[old_row][old_col] != PLAYER_CHIPS[player] and            # Checks whether previous chip is
+            board[current_row][current_col] == PLAYER_CHIPS[player]):  # from the enemy player, and current
         return True                                                    # if is of the current player
     return is_valid_direction(current_row, current_col, row_add, col_add, board, player)
 
 
 def valid_directions(row, col, board, player):
-    """Checks validity of move in all directions and 
+    """Checks validity of move in all directions and
     appends the boolean value to a list. Returns a list with
     8 boolean values (corresponding to the 8 senses).
     """
@@ -184,9 +185,9 @@ def check_all_moves(board, player):
     moves = []
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
-            for k,l in incrementers:
+            for row_add, col_add in incrementers:
                 if not board[i][j]:
-                    moves.append(is_valid_direction(i, j, k, l, board, player))
+                    moves.append(is_valid_direction(i, j, row_add, col_add, board, player))
     return True in moves
 
 
@@ -213,12 +214,12 @@ def main():
     print('¡Bienvenido al Reversi!')
     sleep(1)
     turn_count = 1         # Turn counter, used for 60 turns limit.
-    no_plays_count = 0     # Used in case there is no more possible moves for 
+    no_plays_count = 0     # Used in case there is no more possible moves for
     playing = True         # any player, if it reaches 2, breaks the cycle and ends the game.
     board = create_and_initialize_board()
     if check_boardsize():
         while playing:
-            print('Turn '+str(turn_count))
+            print('Turno '+str(turn_count))
             for i in range(2):
                 print_board(board)
                 if check_all_moves(board, i):
@@ -233,7 +234,7 @@ def main():
             if no_plays_count == 2:      # If it reaches 2 it means that two consecutive
                 break                    # plays were not possible, in that case the cycle
             turn_count += 1              # breaks and the game ends.
-            if turn_count == 61:
+            if turn_count == MAX_TURNS:
                 playing = False
         declare_winner(board)
     else:
