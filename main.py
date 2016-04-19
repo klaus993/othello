@@ -110,7 +110,7 @@ def enter_chip(board, player):
     col_ascii = ord(col)
     literal_col = col_ascii-65     # Column number corresponding to list index.
     literal_row = row-1            # Row number corresponding to list index.
-    if board[literal_row][literal_col] != '':
+    if literal_row not in range(BOARD_SIZE) or literal_col not in range (BOARD_SIZE) or board[literal_row][literal_col] != '':
         return False
     flag = False
     for i in range(8):
