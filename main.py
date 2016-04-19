@@ -3,7 +3,7 @@ from string import ascii_letters
 
 
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 2
+BOARD_SIZE = 8
 PLAYERS = 0, 1
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
@@ -110,6 +110,8 @@ def enter_chip(board, player):
     col_ascii = ord(col)
     literal_col = col_ascii-65     # Column number corresponding to list index.
     literal_row = row-1            # Row number corresponding to list index.
+    if board[literal_row][literal_col] != '':
+        return False
     flag = False
     for i in range(8):
         if valid_directions(literal_row, literal_col, board, player)[i]:
@@ -226,15 +228,18 @@ def main():
                     while not enter_chip(board, i):  # Enters the cycle only if there is an input error.
                         print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
                 else:
-                    print('Color '+PLAYER_COLORS[i]+': no tienes jugadas posibles')
                     if not check_all_moves(board, PLAYERS[i-1]):
+                        print('Ningun color tiene jugadas posibles.')
+                        playing = False
                         break
                     sleep(1)
+                    print('Color '+PLAYER_COLORS[i]+': no tienes jugadas posibles')
             turn_count += 1              # breaks and the game ends.
             if turn_count == MAX_TURNS:
                 playing = False
         declare_winner(board)
     else:
         print('El tamaño del tablero debe ser par')
+
 
 main()
