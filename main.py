@@ -88,7 +88,7 @@ def get_row_col(chip_location):
 
 
 def get_row_col_literals(chip_location):
-    """Gets chip location as a parameter. 
+    """Gets chip location as a parameter.
     Returns literal row and col position as a tuple
     """
     row = int(get_row_col(chip_location)[0]) - 1
@@ -102,7 +102,6 @@ def is_valid_location(chip_location):
     and if the syntax is correct (row column)
     """
     return not(len(chip_location) < 3 or not chip_location or not chip_location[0].isalpha() or not chip_location[1].isspace() or chip_location.isspace() or not chip_location[2:].isdigit())
-        # Covers every other input than the correct syntax (column row)
 
 
 def enter_chip(board, player):
@@ -115,8 +114,7 @@ def enter_chip(board, player):
     chip_location = ask_input(player)
     if not is_valid_location(chip_location):
         return False
-    literal_row = get_row_col_literals(chip_location)[0]   # Column number corresponding to list index.
-    literal_col = get_row_col_literals(chip_location)[1]         # Row number corresponding to list index.
+    literal_row, literal_col = get_row_col_literals(chip_location)  # Column and row numbers corresponding to list index.
     if literal_row not in range(BOARD_SIZE) or literal_col not in range(BOARD_SIZE) or board[literal_row][literal_col]:
         return False
     flag = False
@@ -201,6 +199,9 @@ def declare_winner(board):
 
 
 def play(board):
+    """Playing cycle, plays until both players have no moves left or
+    until 60 turns are played. Returns the final board.
+    """
     playing = True
     turn_count = 1     # Turn counter, used for 60 turns limit.
     while playing:
@@ -220,18 +221,18 @@ def play(board):
         turn_count += 1              # breaks and the game ends.
         if turn_count == MAX_TURNS:
             playing = False
-        declare_winner(board)
     return board
 
 
 def main():
-    """Main flow of the game.
+    """Main flux of the game.
     """
     print('¡Bienvenido al Reversi!')
     sleep(1)
     board = create_and_initialize_board()
     if check_boardsize():
         board = play(board)
+        declare_winner(board)
     else:
         print('El tamaño del tablero debe ser par')
 
