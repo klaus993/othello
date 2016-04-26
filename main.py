@@ -2,7 +2,7 @@ from time import sleep
 
 
 # BOARD_SIZE must be between [4, 26] and even
-BOARD_SIZE = 2
+BOARD_SIZE = 8
 PLAYERS = 0, 1
 PLAYER_0 = '\033[01mB\033[0m'           # White bold 'B'
 PLAYER_1 = '\033[01m\033[90mN\033[0m'   # Dark grey bold 'N'
