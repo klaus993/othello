@@ -139,17 +139,6 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
     return False
 
 
-def valid_directions(row, col, board, player):
-    """Checks validity of move in all directions and
-    appends the boolean value to a list. Returns a list with
-    8 boolean values (corresponding to the 8 senses).
-    """
-    moves = []
-    for i, j in augmenters:
-        moves.append(is_valid_direction(row, col, i, j, board, player))
-    return moves
-
-
 def chip_turn(row, col, row_add, col_add, board, player):
     """Pre: given direction must be a valid move.
     Turns all the chips between the desired location
@@ -157,7 +146,7 @@ def chip_turn(row, col, row_add, col_add, board, player):
     """
     row += row_add
     col += col_add
-    if (board[row][col] != PLAYER_CHIPS[player]):
+    if (board[row][col] == PLAYER_CHIPS[player - 1]):
         board[row][col] = PLAYER_CHIPS[player]
     else:
         return board
