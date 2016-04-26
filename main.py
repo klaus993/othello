@@ -1,5 +1,4 @@
 from time import sleep
-# from string import ascii_letters
 
 
 # BOARD_SIZE must be between [4, 26] and even
@@ -11,7 +10,7 @@ PLAYER_CHIPS = (PLAYER_0, PLAYER_1)
 INPUT_PROMPT = 'ingrese una ficha (columna fila): '
 PLAYER_COLORS = ('blanco', 'negro')
 MAX_TURNS = 61
-incrementers = (1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1)
+augmenters = (1, 0), (1, 1), (1, -1), (0, 1), (0, -1), (-1, 0), (-1, 1), (-1, -1)
 
 
 def check_boardsize():
@@ -40,7 +39,7 @@ def create_and_initialize_board():
     center_index_2 = center_index_1 - 1
     board[center_index_2][center_index_2] = PLAYER_CHIPS[0]
     board[center_index_2][center_index_1] = PLAYER_CHIPS[1]
-    board[center_index_1][center_index_2] = PLAYER_CHIPS[0]
+    board[center_index_1][center_index_2] = PLAYER_CHIPS[1]
     board[center_index_1][center_index_1] = PLAYER_CHIPS[0]
     return board
 
@@ -100,6 +99,7 @@ def enter_chip(board, player):
     and a player (0 or 1), turns the chips that must be turned
     given the game rules and returns the resulting board (list).
     Also checks syntax for user chip input and move validity.
+    If it's invalid returns False
     """
     chip_location = ask_input(player)
     if len(chip_location) < 3 or not chip_location or not chip_location[0].isalpha() or not chip_location[1].isspace() or chip_location.isspace() or not chip_location[2:].isdigit():
@@ -110,13 +110,12 @@ def enter_chip(board, player):
     col_ascii = ord(col)
     literal_col = col_ascii - 65     # Column number corresponding to list index.
     literal_row = row - 1            # Row number corresponding to list index.
-    if literal_row not in range(BOARD_SIZE) or literal_col not in range(BOARD_SIZE) or board[literal_row][literal_col] != '':
+    if literal_row not in range(BOARD_SIZE) or literal_col not in range(BOARD_SIZE) or board[literal_row][literal_col]:
         return False
     flag = False
-    for i in range(8):
-        if valid_directions(literal_row, literal_col, board, player)[i]:
-            # Checks directions in which to convert enemy chips
-            board = chip_turn(literal_row, literal_col, incrementers[i][0], incrementers[i][1], board, player)
+    for i, j in augmenters:
+        if is_valid_direction(literal_row, literal_col, i, j, board, player):
+            board = chip_turn(literal_row, literal_col, i, j, board, player)
             flag = True
     if flag:
         board[literal_row][literal_col] = PLAYER_CHIPS[player]
@@ -131,18 +130,13 @@ def is_valid_direction(old_row, old_col, row_add, col_add, board, player):
     """
     current_row = old_row + row_add
     current_col = old_col + col_add
-    if (current_row not in range(BOARD_SIZE) or current_col not in range(BOARD_SIZE) or      # Checks all the posibilities
-        (board[current_row][current_col] == PLAYER_CHIPS[player] and   # which result in an invalid conversion
-            board[old_row][old_col] == PLAYER_CHIPS[player]) or
-        (board[old_row][old_col] == PLAYER_CHIPS[player] or
-            (not board[current_row][current_col]) or
-            (not board[old_row][old_col] and
-                board[current_row][current_col] == PLAYER_CHIPS[player]))):
-        return False
-    if (board[old_row][old_col] != PLAYER_CHIPS[player] and            # Checks whether previous chip is
-            board[current_row][current_col] == PLAYER_CHIPS[player]):  # from the enemy player, and current
-        return True                                                    # if is of the current player
-    return is_valid_direction(current_row, current_col, row_add, col_add, board, player)
+    if (current_row in range(BOARD_SIZE) and current_col in range(BOARD_SIZE) and board[current_row][current_col]):
+        if (board[old_row][old_col] == PLAYER_CHIPS[player - 1] and
+                board[current_row][current_col] == PLAYER_CHIPS[player]):
+            return True
+        if (board[current_row][current_col] == PLAYER_CHIPS[player - 1]):
+            return is_valid_direction(current_row, current_col, row_add, col_add, board, player)
+    return False
 
 
 def valid_directions(row, col, board, player):
@@ -151,7 +145,7 @@ def valid_directions(row, col, board, player):
     8 boolean values (corresponding to the 8 senses).
     """
     moves = []
-    for i, j in incrementers:
+    for i, j in augmenters:
         moves.append(is_valid_direction(row, col, i, j, board, player))
     return moves
 
@@ -189,7 +183,7 @@ def check_all_moves(board, player):
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
             if not board[i][j]:
-                for row_add, col_add in incrementers:
+                for row_add, col_add in augmenters:
                     moves.append(is_valid_direction(i, j, row_add, col_add, board, player))
     return True in moves
 
@@ -198,15 +192,16 @@ def declare_winner(board):
     """Given a board, checks the winner of the game by counting
     the chips of both players. Prints a message and the correspondings points
     """
+    results = count_chips(board, 0), count_chips(board, 1)
     winner = '¡El color {} ha ganado la partida!'
     for i in range(2):
-        if count_chips(board, i) > count_chips(board, i - 1):
-            print(winner.format(PLAYER_COLORS[i]))
-    if player_0_points == player_1_points:
+        if results[i] > results[i - 1]:
+            print(winner.format(PLAYER_COLORS[i]) + '\n')
+    if results[0] == results[1]:
         print('¡Empate!\n')
     print('Puntajes:')
     for i in range(2):
-        print('{}: {} punto(s)'.format(PLAYER_COLORS[i].title(), count_chips(board, i)))
+        print('{}: {} punto(s)'.format(PLAYER_COLORS[i].title(), results[i]))
 
 
 def main():
