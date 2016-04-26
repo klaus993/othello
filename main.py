@@ -101,7 +101,7 @@ def is_valid_location(chip_location):
     Checks whether the chip location is on the board,
     and if the syntax is correct (row column)
     """
-    return not(len(chip_location) < 3 or not chip_location or not chip_location[0].isalpha() or not chip_location[1].isspace() or chip_location.isspace() or not chip_location[2:].isdigit())
+    return not len(chip_location) < 3 or chip_location or chip_location[0].isalpha() or chip_location[1].isspace() or not chip_location.isspace() or chip_location[2:].isdigit()
 
 
 def enter_chip(board, player):
