@@ -80,18 +80,29 @@ def ask_input(player):
     return chip_location
 
 
-def return_col(chip_location):
-    """ Given a string chip_location, splits the string into
-    a list and returns the column location (string, a letter) uppercase.
+def get_row_col(chip_location):
+    """Gets chip location as a parameter
+    Returns raw row and col
     """
-    return chip_location.split()[0].upper()
+    return chip_location.split()[1], chip_location.split()[0].upper()
 
 
-def return_row(chip_location):
-    """ Given a string chip_location, splits the string into
-    a list and returns the row location (string, a number).
+def get_row_col_literals(chip_location):
+    """Gets chip location as a parameter. 
+    Returns literal row and col position as a tuple
     """
-    return chip_location.split()[1]
+    row = int(get_row_col(chip_location)[0]) - 1
+    col = ord(get_row_col(chip_location)[1]) - 65
+    return row, col
+
+
+def is_valid_location(chip_location):
+    """Gets chip location as a parameter.
+    Checks whether the chip location is on the board,
+    and if the syntax is correct (row column)
+    """
+    return not(len(chip_location) < 3 or not chip_location or not chip_location[0].isalpha() or not chip_location[1].isspace() or chip_location.isspace() or not chip_location[2:].isdigit())
+        # Covers every other input than the correct syntax (column row)
 
 
 def enter_chip(board, player):
@@ -102,14 +113,10 @@ def enter_chip(board, player):
     If it's invalid returns False
     """
     chip_location = ask_input(player)
-    if len(chip_location) < 3 or not chip_location or not chip_location[0].isalpha() or not chip_location[1].isspace() or chip_location.isspace() or not chip_location[2:].isdigit():
-            # Covers every other input than the correct syntax (column row)
+    if not is_valid_location(chip_location):
         return False
-    col = return_col(chip_location)
-    row = int(return_row(chip_location))
-    col_ascii = ord(col)
-    literal_col = col_ascii - 65     # Column number corresponding to list index.
-    literal_row = row - 1            # Row number corresponding to list index.
+    literal_row = get_row_col_literals(chip_location)[0]   # Column number corresponding to list index.
+    literal_col = get_row_col_literals(chip_location)[1]         # Row number corresponding to list index.
     if literal_row not in range(BOARD_SIZE) or literal_col not in range(BOARD_SIZE) or board[literal_row][literal_col]:
         return False
     flag = False
@@ -193,33 +200,38 @@ def declare_winner(board):
         print('{}: {} punto(s)'.format(PLAYER_COLORS[i].title(), results[i]))
 
 
+def play(board):
+    playing = True
+    turn_count = 1     # Turn counter, used for 60 turns limit.
+    while playing:
+        print('Turno ' + str(turn_count))
+        for i in range(2):
+            print_board(board)
+            if check_all_moves(board, PLAYERS[i]):
+                while not enter_chip(board, i):  # Enters the cycle only if there is an input error.
+                    print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
+            else:
+                if not check_all_moves(board, PLAYERS[i - 1]):
+                    print('Ningun color tiene jugadas posibles.')
+                    playing = False
+                    break
+                sleep(1)
+                print('Color ' + PLAYER_COLORS[i] + ': no tienes jugadas posibles')
+        turn_count += 1              # breaks and the game ends.
+        if turn_count == MAX_TURNS:
+            playing = False
+        declare_winner(board)
+    return board
+
+
 def main():
-    """Main function. Main flow of the game.
+    """Main flow of the game.
     """
     print('¡Bienvenido al Reversi!')
     sleep(1)
-    turn_count = 1         # Turn counter, used for 60 turns limit.
-    playing = True         # any player, if it reaches 2, breaks the cycle and ends the game.
     board = create_and_initialize_board()
     if check_boardsize():
-        while playing:
-            print('Turno ' + str(turn_count))
-            for i in range(2):
-                print_board(board)
-                if check_all_moves(board, PLAYERS[i]):
-                    while not enter_chip(board, i):  # Enters the cycle only if there is an input error.
-                        print('Sintaxis incorrecta o movimiento inválido. Vuelva a ingresar la ficha.')
-                else:
-                    if not check_all_moves(board, PLAYERS[i - 1]):
-                        print('Ningun color tiene jugadas posibles.')
-                        playing = False
-                        break
-                    sleep(1)
-                    print('Color ' + PLAYER_COLORS[i] + ': no tienes jugadas posibles')
-            turn_count += 1              # breaks and the game ends.
-            if turn_count == MAX_TURNS:
-                playing = False
-        declare_winner(board)
+        board = play(board)
     else:
         print('El tamaño del tablero debe ser par')
 
