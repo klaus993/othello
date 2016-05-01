@@ -1,4 +1,3 @@
-from time import sleep
 from play import *
 from board import *
 from winner import *
